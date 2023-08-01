@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#000000">  
+  <meta name="theme-color" content="#000000">
   <title>[[.Title]]</title>
   <link rel="shortcut icon" type="image/png" href="[[.Prefix]]/-/assets/favicon.png" />
   <link rel="stylesheet" type="text/css" href="[[.Prefix]]/-/assets/bootstrap-3.3.5/css/bootstrap.min.css">
@@ -21,22 +21,24 @@
     <div class="container">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+            data-target="#bs-example-navbar-collapse-2">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="[[.Prefix]]/">[[.Title]]</a>
+          <img src="[[.Prefix]]/-/assets/imgs/title.png" alt="" style="width:35px;height:35px;float:left!important;margin-top: 5px;margin-right: 5px;">
+          <a class="navbar-brand" style="color:#ffffff" href="[[.Prefix]]/">Hugging Face镜像</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
           <ul class="nav navbar-nav">
-            <li class="hidden-xs">
+            <!-- <li class="hidden-xs">
               <a href="javascript:void(0)" v-on:click='genQrcode()'>
                 View in Phone
                 <span class="glyphicon glyphicon-qrcode"></span>
               </a>
-            </li>
+            </li> -->
             [[if eq .AuthType "openid"]]
             <template v-if="!user.email">
               <a href="/-/login" class="btn btn-sm btn-default navbar-btn">
@@ -52,23 +54,34 @@
             [[end]]
             [[if eq .AuthType "oauth2-proxy"]]
             <template v-if="!user.email">
-                <a href="#" class="btn btn-sm btn-default navbar-btn">
-                    Guest <span class="glyphicon glyphicon-user"></span>
-                </a>
+              <a href="#" class="btn btn-sm btn-default navbar-btn">
+                Guest <span class="glyphicon glyphicon-user"></span>
+              </a>
             </template>
             <template v-else>
-                <a href="/-/logout" class="btn btn-sm btn-default navbar-btn">
-                    <span v-text="user.name"></span>
-                    <i class="fa fa-sign-out"></i>
-                </a>
+              <a href="/-/logout" class="btn btn-sm btn-default navbar-btn">
+                <span v-text="user.name"></span>
+                <i class="fa fa-sign-out"></i>
+              </a>
             </template>
             [[end]]
           </ul>
-          <form class="navbar-form navbar-right">
-            <div class="input-group">
-              <input type="text" name="search" class="form-control" placeholder="Search text" v-bind:value="search"
+          <div style="float: right!important;width: 80px;height:50px;display: flex;justify-content: center;align-items: center;margin-right: 150px">
+            <a style="color:#fff;font-size: 16px;position: relative;" href="/datasets/">
+              <svg style="width:16px;height:16px;position:absolute;top:3px;left:-20px" t="1690879006313" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1523" width="128" height="128"><path d="M904.5 604.6c0-2.8-0.1-5.7-0.4-8.6V235.7h-0.4v-0.9c0-19.8-7-49.5-40.1-78.8-21.2-18.8-50.7-35.3-87.6-49.1-71.2-26.6-165.1-41.3-264.4-41.3s-193.2 14.7-264.4 41.3c-36.8 13.8-66.3 30.3-87.6 49.1-33.2 29.3-40.1 59-40.1 78.8 0 2.9 0.1 5.7 0.4 8.6v171.8c-0.1 1.4-0.1 2.8-0.1 4.2 0 1.4 0 2.9 0.1 4.2V790c0.1 19.8 7.2 49.3 40.1 78.4 21.2 18.8 50.7 35.3 87.6 49.1 71.2 26.6 165.1 41.3 264.4 41.3s193.2-14.7 264.4-41.3c36.8-13.8 66.3-30.3 87.6-49.1 32.9-29.1 40-58.6 40.1-78.4V613.2c0.3-2.9 0.4-5.8 0.4-8.6zM191.9 336.8c14 8.3 30.6 16.4 50.3 24C314 388.6 409.6 404 511.6 404c102 0 197.8-15.4 269.6-43.3 19.1-7.4 36.1-15.6 50.9-24.5v83.2c0 14.5-23.8 38.4-76.9 59C692.3 503 603.5 517 511.6 517c-91.8 0-180.5-14-243.2-38.5-50.7-19.8-74.7-42.8-76.4-57.3v-84.4z m15.4-126.9c14.4-12.7 36.9-25 65.1-35.6 63.3-23.7 148.3-36.7 239.2-36.7s175.9 13 239.2 36.7c28.2 10.5 50.7 22.8 65.1 35.6 5.8 5.2 15.6 15.2 15.8 24.6v0.5c-0.2 14.4-24 38.1-76.5 58.5C692.3 318 603.5 332 511.6 332S331 318 268.2 293.7c-51.7-20-73.2-41.9-76.3-55.3v-2.7h-0.4v-0.9c0-9.4 9.9-19.6 15.8-24.9z m-15.4 311.5c14.7 8.7 31.5 16.8 50.3 24.2 71.8 28 167.5 43.4 269.4 43.4 102 0 197.7-15.4 269.7-43.4 19-7.4 36-15.6 50.8-24.4v86.9c-3.1 13.4-24.8 35.3-76.8 55.4-63 24.3-151.8 38.3-243.7 38.3-91.6 0-180.1-14-242.7-38.3-53.1-20.6-76.9-44.6-76.9-59.2v-82.9z m624.4 293c-14.4 12.7-36.9 25-65.1 35.6-63.3 23.7-148.3 36.7-239.2 36.7-90.9 0-175.9-13-239.2-36.7-28.2-10.5-50.7-22.8-65.1-35.6-5.9-5.2-15.8-15.4-15.8-24.9v-83.3c14.8 8.8 31.8 17 50.8 24.4 71.7 27.9 167.2 43.2 268.8 43.2 101.9 0 197.7-15.3 269.7-43.1 19.9-7.7 36.7-15.9 50.9-24.2v83.1c0 9.4-9.9 19.6-15.8 24.8z" fill="#FFFFFF" p-id="1524"></path><path d="M731.521085 429.78218a31.2 31.2 0 1 0 61.595038-9.990562 31.2 31.2 0 1 0-61.595038 9.990562Z" fill="#FFFFFF" p-id="1525"></path><path d="M762.7 606.5m-31.2 0a31.2 31.2 0 1 0 62.4 0 31.2 31.2 0 1 0-62.4 0Z" fill="#FFFFFF" p-id="1526"></path><path d="M762.7 793.9m-31.2 0a31.2 31.2 0 1 0 62.4 0 31.2 31.2 0 1 0-62.4 0Z" fill="#FFFFFF" p-id="1527"></path></svg>
+              数据集
+            </a>
+          </div>
+          <div style="float: right!important; width: 80px;height:50px;display: flex;justify-content: center;align-items: center;margin-right: 0px">
+            <a style="color:#fff;font-size: 16px;position: relative;" href="/models/">
+              <svg style="width:16px;height:16px;position:absolute;top:3px;left:-20px" t="1690879099264" class="icon" viewBox="0 0 1061 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2946" width="128" height="128"><path d="M447.122465 467.332105L49.240301 268.161564A33.501036 33.501036 0 0 0 0.136043 300.744763v441.020484a33.042117 33.042117 0 0 0 16.06214 27.994016L413.162511 1018.034062a33.959954 33.959954 0 0 0 17.438895 5.50702 33.042117 33.042117 0 0 0 33.042117-33.042118V497.161795a33.042117 33.042117 0 0 0-17.438895-29.82969zM398.018207 931.298504l-331.339011-208.348907v-367.134638l331.339011 162.915996zM1046.010843 263.572381a33.042117 33.042117 0 0 0-31.665363 0L550.838 467.332105a33.042117 33.042117 0 0 0-19.733487 30.288608v493.33717a33.042117 33.042117 0 0 0 49.563176 28.452934l463.048562-265.254776a33.042117 33.042117 0 0 0 16.521059-28.452934V291.566398a33.042117 33.042117 0 0 0-14.685386-27.994017z m-50.939931 441.020484L596.72983 931.298504v-413.026468l397.882163-176.224626zM991.399565 178.672496a33.042117 33.042117 0 0 0-22.486996-29.829689L550.838 1.530034a32.583199 32.583199 0 0 0-19.733487 0L83.659173 158.021173a33.042117 33.042117 0 0 0-4.130264 61.036134l397.882163 199.170541a33.042117 33.042117 0 0 0 14.685386 3.212428 33.959954 33.959954 0 0 0 13.30863 0l463.966399-205.595398a33.042117 33.042117 0 0 0 22.028078-37.172382zM494.391049 349.849021L180.490934 195.193555l358.874108-125.743613 328.126583 112.434982z m0 0" fill="#FFFFFF" p-id="2947"></path></svg>
+              模型</a>
+          </div>
+          <form class="navbar-form navbar-right" style="width: 400px;margin-right:0px;float: left!important;;">
+            <div class="input-group" style="width:100%">
+              <input type="text" name="search" class="form-control" placeholder="模型名称" v-bind:value="search"
                 autofocus>
-              <span class="input-group-btn">
+              <span class="input-group-btn" style="width: 1%;">
                 <button class="btn btn-default" type="submit">
                   <span class="glyphicon glyphicon-search"></span>
                 </button>
@@ -77,23 +90,13 @@
           </form>
           <ul id="nav-right-bar" class="nav navbar-nav navbar-right">
           </ul>
+
         </div>
       </div>
     </div>
   </nav>
   <div class="container">
     <div class="col-md-12">
-      <ol class="breadcrumb">
-        <li>
-          <a v-on:click='changePath("/", $event)' href="/"><i class="fa fa-home"></i></a>
-        </li>
-        <li v-for="bc in breadcrumb.slice(0, breadcrumb.length-1)">
-          <a v-on:click='changePath(bc.path, $event)' href="{{bc.path}}">{{bc.name}}</a>
-        </li>
-        <li v-if="breadcrumb.length >= 1">
-          {{breadcrumb.slice(-1)[0].name}}
-        </li>
-      </ol>
       <table class="table table-hover" v-if="!previewMode">
         <thead>
           <tr>
@@ -101,45 +104,66 @@
               <!-- <button class="btn btn-xs btn-default" v-on:click='toggleHidden()'>
                 Back <i class="fa" v-bind:class='showHidden ? "fa-eye" : "fa-eye-slash"'></i>
               </button> -->
-              <div>
-                <button class="btn btn-xs btn-default" onclick="history.back()">
-                  Back <i class="fa fa-arrow-left"></i>
-                </button>
-                <button class="btn btn-xs btn-default" v-on:click='toggleHidden()'>
-                  Hidden <i class="fa" v-bind:class='showHidden ? "fa-eye" : "fa-eye-slash"'></i>
-                </button>
-                <button class="btn btn-xs btn-default" v-show="auth.upload" data-toggle="modal" data-target="#upload-modal">
-                  Upload <i class="fa fa-upload"></i>
-                </button>
-                <button class="btn btn-xs btn-default" v-show="auth.delete" @click="makeDirectory">
-                  New Folder <i class="fa fa-folder"></i>
-                </button>
+              <div style="display:flex;flex-direction:row;justify-content:center">
+                <!-- <div>
+                  <button class="btn btn-xs btn-default" onclick="history.back()">
+                    返回 <i class="fa fa-arrow-left"></i>
+                  </button>
+                  <button class="btn btn-xs btn-default" v-on:click='toggleHidden()'>
+                    隐藏 <i class="fa" v-bind:class='showHidden ? "fa-eye" : "fa-eye-slash"'></i>
+                  </button>
+                  <button class="btn btn-xs btn-default" v-show="auth.upload" data-toggle="modal" data-target="#upload-modal">
+                    Upload <i class="fa fa-upload"></i>
+                  </button>
+                  <button class="btn btn-xs btn-default" v-show="auth.delete" @click="makeDirectory">
+                    New Folder <i class="fa fa-folder"></i>
+                  </button>
+                </div> -->
+                <!-- 路径 -->
+                <div style="flex: auto;">
+                  <ol class="breadcrumb" style="padding:2px 15px;margin-bottom:0px;background-color:#fff">
+                    <li>
+                      <a v-on:click='changePath("/", $event)' href="/"><i class="fa fa-home"></i></a>
+                    </li>
+                    <li v-for="bc in breadcrumb.slice(0, breadcrumb.length-1)">
+                      <a v-on:click='changePath(bc.path, $event)' href="{{bc.path}}">{{bc.name}}</a>
+                    </li>
+                    <li v-if="breadcrumb.length >= 1">
+                      {{breadcrumb.slice(-1)[0].name}}
+                    </li>
+                  </ol>
+                </div>
               </div>
             </td>
           </tr>
           <tr>
-            <th>Name</th>
-            <th>Size</th>
+            <th>名称</th>
+            <th>大小</th>
             <th class="hidden-xs">
-              <span style="cursor: pointer" v-on:click='mtimeTypeFromNow = !mtimeTypeFromNow'>ModTime</span>
+              <span style="cursor: pointer" v-on:click='mtimeTypeFromNow = !mtimeTypeFromNow'>修改时间</span>
             </th>
-            <th>Actions</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="f in computedFiles">
-            <td>
+            <td style="font-size: 16px;">
               <a v-on:click='clickFileOrDir(f, $event)' href="{{getEncodePath(f.name)}}">
                 <!-- ?raw=false -->
-                <i style="padding-right: 0.5em" class="fa" v-bind:class='genFileClass(f)'></i> {{f.name}}
+                <i style="padding-right: 0.2em;" class="fa" v-bind:class='genFileClass(f)'></i> {{f.name}}
               </a>
               <!-- for search -->
-              <button v-show="f.type == 'file' && f.name.indexOf('/') >= 0" class="btn btn-default btn-xs" @click="changeParentDirectory(f.path)">
+              <button v-show="f.type == 'file' && f.name.indexOf('/') >= 0" class="btn btn-default btn-xs"
+                @click="changeParentDirectory(f.path)">
                 <i class="fa fa-folder-open-o"></i>
               </button>
             </td>
-            <td><span v-if="f.type == 'dir'">~</span> {{f.size | formatBytes}}</td>
-            <td class="hidden-xs">{{formatTime(f.mtime)}}</td>
+            <!-- <td style="font-size: 16px;"><span v-if="f.type == 'dir'">~</span> {{f.size | formatBytes}}</td> -->
+            <td style="font-size: 16px;">
+              <span v-if="f.type == 'dir'">~</span>
+              <span v-else>{{formatBytes(f.size)}}</span>
+            </td>
+            <td style="font-size: 16px;" class="hidden-xs">{{formatTime(f.mtime)}}</td>
             <td style="text-align: left">
               <template v-if="f.type == 'dir'">
                 <a class="btn btn-default btn-xs" href="{{getEncodePath(f.name)}}/?op=archive">
@@ -147,7 +171,7 @@
                   <span class="glyphicon glyphicon-download-alt"></span>
                 </a>
                 <button class="btn btn-default btn-xs" v-on:click="showInfo(f)">
-                    <span class="glyphicon glyphicon-info-sign"></span>
+                  <span class="glyphicon glyphicon-info-sign"></span>
                 </button>
                 <button class="btn btn-default btn-xs" v-if="auth.delete" v-on:click="deletePathConfirm(f, $event)">
                   <span style="color:#CC3300" class="glyphicon glyphicon-trash"></span>
@@ -169,7 +193,8 @@
                   <span v-if="shouldHaveQrcode(f.name)">QRCode</span>
                   <span class="glyphicon glyphicon-qrcode"></span>
                 </button>
-                <a class="btn btn-default btn-xs visible-xs" v-if="shouldHaveQrcode(f.name)" href="{{genInstallURL(f.name)}}">
+                <a class="btn btn-default btn-xs visible-xs" v-if="shouldHaveQrcode(f.name)"
+                  href="{{genInstallURL(f.name)}}">
                   Install <i class="fa fa-cube"></i>
                 </a>
                 <button class="btn btn-default btn-xs" v-if="auth.delete" v-on:click="deletePathConfirm(f, $event)">
@@ -200,7 +225,8 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
               <h4 class="modal-title">
                 <span id="qrcode-title"></span>
                 <a style="font-size: 0.6em" href="#" id="qrcode-link">[view]</a>
@@ -222,7 +248,8 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
               <h4 class="modal-title">
                 <i class="fa fa-upload"></i> File upload
               </h4>
@@ -242,7 +269,8 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
               <h4 class="modal-title">
                 <span id="file-info-title"></span>
               </h4>
@@ -256,10 +284,46 @@
     </div>
     <div class="col-md-12">
       <div id="footer" class="pull-right" style="margin: 2em 1em">
-        <a href="https://github.com/codeskyblue/gohttpserver">gohttpserver ({{version}})</a>, by <a href="https://github.com/codeskyblue">codeskyblue</a>.
+        <!-- <a href="https://github.com/codeskyblue/gohttpserver">gohttpserver ({{version}})</a>, by <a href="https://github.com/codeskyblue">codeskyblue</a>. -->
       </div>
     </div>
   </div>
+  <!-- 尾部 -->
+  <div style="background-color: #384452;width: 100%; margin-top: 30px;padding: 20px 0">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-12 wow" style="line-height: 1.7;
+        font-size: 15px;color:#bfc9d3;margin-top: 30px;">
+          本站为HuggingFace（AI资源托管社区）的资源下载镜像网站，使用<a>gohttpserver</a> 源码搭建，为开发者提供模型下载加速服务。
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 wow" style="line-height: 1.7;
+        font-size: 15px;color:#bfc9d3;margin-top: 30px;">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;联系我们
+          <ul>
+            <li>邮箱: gitclone@126.com</li>
+            <li><a class="modelpart_content_a" href="https://github.com/git-cloner">GitHub</a></li>
+            <li><a class="modelpart_content_a" href="https://gitclone.com">GitClone社区官网</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 wow">
+          <ul style="margin-top: 20px;color:#bfc9d3;">
+            <li style="margin-bottom: 4px;"><a style="color:#bfc9d3;" href="https://gitclone.com/">GitClone开源社区</a></li>
+            <li style="margin-bottom: 4px;"><a style="color:#bfc9d3;" href="https://www.opendao.cn/">极客社区OPENDAO</a></li>
+            <li style="margin-bottom: 4px;"><a style="color:#bfc9d3;" href="https://www.gitclone.com/gogs/">Gogs代码托管</a></li>
+            <li style="margin-bottom: 4px;"><a style="color:#bfc9d3;" href="https://gitclone.com/aiit/chat/">AI聊天</a></li>
+            <li style="margin-bottom: 4px;"><a style="color:#bfc9d3;" href="https://classnotfound.com.cn/">国产findjar</a></li>
+            <li style="margin-bottom: 4px;"><a style="color:#bfc9d3;" href="https://aiit.gitclone.com/">AI人脸特效</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div
+      style="width: 100%;margin-top:20px 0px;display: flex;justify-content: center;align-items: center;color:#bfc9d3">
+      <p style="padding: 0 15px;"><a href="https://beian.miit.gov.cn/#/Integrated/index"
+          style="color:#bfc9d3">京ICP备2023019208号-1</a> | Copyright ©2023-互链高科（北京）技术发展有限公司 版权所有</p>
+    </div>
+  </div>
+
   <script>
     window.URL_PFEFIX = "[[.Prefix]]"
   </script>
@@ -279,7 +343,7 @@
   <!--Sync status bar color with border-color on mobile platforms.-->
   <script>
     var META = document.getElementsByTagName("meta");
-    META[2]["content"]=$('.navbar').css('border-color');
+    META[2]["content"] = $('.navbar').css('border-color');
   </script>
   [[if .GoogleTrackerID ]]
   <script>

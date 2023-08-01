@@ -143,6 +143,14 @@ var vm = new Vue({
     getEncodePath: function (filepath) {
       return pathJoin([location.pathname].concat(filepath.split("/").map(v => encodeURIComponent(v))))
     },
+    formatBytes:function (value) {
+      var bytes = parseFloat(value);
+      if (bytes < 0) return "-";
+      else if (bytes < 1024) return bytes + " B";
+      else if (bytes < 1048576) return (bytes / 1024).toFixed(0) + " KB";
+      else if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + " MB";
+      else return (bytes / 1073741824).toFixed(1) + " GB";
+    },
     formatTime: function (timestamp) {
       var m = moment(timestamp);
       if (this.mtimeTypeFromNow) {
