@@ -622,7 +622,38 @@ func (s *HTTPStaticServer) hJSONList(w http.ResponseWriter, r *http.Request) {
 			lr.Size = s.historyDirSize(lr.Path)
 		} else {
 			lr.Type = "file"
-			lr.Size = info.Size() // formatSize(info)
+			if info.Mode()&os.ModeSymlink == os.ModeSymlink {
+
+				absPath := "/sda1/dataroot/" + lr.Path
+
+				// 获取软链接目标
+				targetPath, err := os.Readlink(absPath)
+				if err != nil {
+					fmt.Println("获取软连接目标失败:", err)
+					lr.Size = info.Size()
+					return
+				}
+
+				// 获取当前可执行文件的绝对路径
+				exePath, err := os.Executable()
+				if err != nil {
+					fmt.Println("获取可执行文件路径错误:", err)
+					return
+				}
+
+				// 将软链接目标地址与当前可执行文件的绝对路径拼接，得到绝对路径
+				result_absPath := filepath.Join(filepath.Dir(exePath), targetPath)
+				fmt.Println("最终执行路径:", result_absPath)
+
+				targetFileInfo, err := os.Stat("/sda1" + result_absPath)
+				if err != nil {
+					fmt.Println("软连接读取失败Error:", err)
+				}
+				lr.Size = targetFileInfo.Size()
+
+			} else {
+				lr.Size = info.Size() // formatSize(info),非软连接
+			}
 		}
 		lrs = append(lrs, lr)
 	}
