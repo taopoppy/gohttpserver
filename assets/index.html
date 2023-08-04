@@ -148,7 +148,7 @@
             <th class="hidden-xs">
               <span style="cursor: pointer" v-on:click='mtimeTypeFromNow = !mtimeTypeFromNow'>修改时间</span>
             </th>
-            <th>操作</th>
+            <th>操作<span style="font-size: 12px;">（复制链接到浏览器新标签中下载更快）</span></th>
           </tr>
         </thead>
         <tbody>
@@ -185,20 +185,21 @@
               </template>
               <template v-if="f.type == 'file'">
                 <a class="btn btn-default btn-xs hidden-xs" href="{{genDownloadURL(f)}}">
-                  <span class="hidden-xs"></span>
+                  <span class="hidden-xs">下载</span>
                   <span class="glyphicon glyphicon-download-alt"></span>
                 </a>
                 <button class="btn btn-default btn-xs bstooltip" data-trigger="manual" data-title="Copied!"
-                  data-clipboard-text="{{genDownloadURL(f)}}">
+                  data-clipboard-text="{{genDownloadURL1(f)}}">
+                  <span class="hidden-xs">复制</span>
                   <i class="fa fa-copy"></i>
                 </button>
-                <button class="btn btn-default btn-xs" v-on:click="showInfo(f)">
+                <!-- <button class="btn btn-default btn-xs" v-on:click="showInfo(f)">
                   <span class="glyphicon glyphicon-info-sign"></span>
                 </button>
                 <button class="btn btn-default btn-xs hidden-xs" v-on:click="genQrcode(f.name)">
                   <span v-if="shouldHaveQrcode(f.name)">QRCode</span>
                   <span class="glyphicon glyphicon-qrcode"></span>
-                </button>
+                </button> -->
                 <a class="btn btn-default btn-xs visible-xs" v-if="shouldHaveQrcode(f.name)"
                   href="{{genInstallURL(f.name)}}">
                   Install <i class="fa fa-cube"></i>

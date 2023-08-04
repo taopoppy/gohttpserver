@@ -159,7 +159,6 @@ var vm = new Vue({
   },
   methods: {
     getEncodePath: function (filepath) {
-      console.log(filepath)
       return pathJoin([location.pathname].concat(filepath.split("/").map(v => encodeURIComponent(v))))
     },
     formatBytes:function (value) {
@@ -219,6 +218,9 @@ var vm = new Vue({
       var sep = search == "" ? "?" : "&"
       return location.origin + this.getEncodePath(f.name) + location.search + sep + "download=true";
     },
+    genDownloadURL1: function (f) {
+      return "http://61.133.217.142:20800/download" + this.getEncodePath(f.name)
+    },
     shouldHaveQrcode: function (name) {
       return ['apk', 'ipa'].indexOf(getExtention(name)) !== -1;
     },
@@ -228,9 +230,6 @@ var vm = new Vue({
           return 'fa-git-square';
         }
         return "fa-folder-open";
-      }
-      if (f.type == "symlink") {
-        return "fa-link";
       }
       var ext = getExtention(f.name);
       switch (ext) {
