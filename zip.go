@@ -95,7 +95,17 @@ func CompressToZip(w http.ResponseWriter, rootDir string) {
 		if info.Name() == YAMLCONF { // ignore .ghs.yml for security
 			return nil
 		}
-		return zw.Add(zipPath, path)
+		if info.Mode()&os.ModeSymlink == os.ModeSymlink {
+			// 如果是软连接，要修改一下路径
+			targetPath, _ := os.Readlink(path)
+			exePath, _ := os.Executable()
+			result_absPath := filepath.Join(filepath.Dir(exePath), targetPath)
+
+			fmt.Println("result_absPath", "/sda1"+result_absPath)
+			return zw.Add(zipPath, "/sda1"+result_absPath)
+		} else {
+			return zw.Add(zipPath, path)
+		}
 	})
 }
 

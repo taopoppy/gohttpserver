@@ -172,20 +172,20 @@
             <td style="font-size: 16px;" class="hidden-xs">{{formatTime(f.mtime)}}</td>
             <td style="text-align: left">
               <template v-if="f.type == 'dir'">
-                <a class="btn btn-default btn-xs" href="{{getEncodePath(f.name)}}/?op=archive">
+                <!-- <a class="btn btn-default btn-xs" href="{{getEncodePath(f.name)}}/?op=archive">
                   <span class="hidden-xs">Archive</span> Zip
                   <span class="glyphicon glyphicon-download-alt"></span>
-                </a>
-                <button class="btn btn-default btn-xs" v-on:click="showInfo(f)">
+                </a> -->
+                <!-- <button class="btn btn-default btn-xs" v-on:click="showInfo(f)">
                   <span class="glyphicon glyphicon-info-sign"></span>
-                </button>
+                </button> -->
                 <button class="btn btn-default btn-xs" v-if="auth.delete" v-on:click="deletePathConfirm(f, $event)">
                   <span style="color:#CC3300" class="glyphicon glyphicon-trash"></span>
                 </button>
               </template>
               <template v-if="f.type == 'file'">
                 <a class="btn btn-default btn-xs hidden-xs" href="{{genDownloadURL(f)}}">
-                  <span class="hidden-xs">Download</span>
+                  <span class="hidden-xs"></span>
                   <span class="glyphicon glyphicon-download-alt"></span>
                 </a>
                 <button class="btn btn-default btn-xs bstooltip" data-trigger="manual" data-title="Copied!"

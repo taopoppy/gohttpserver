@@ -108,6 +108,24 @@ var vm = new Vue({
           }
         })
       }
+      // 发现第一个type为file的元素
+      if(Array.isArray(files)) {
+        let splitIndex = files.findIndex((item) => item.type == 'file')
+        if(splitIndex !== -1) {
+          let dirArray = files.slice(0, splitIndex);
+          let fileArray = files.slice(splitIndex);
+
+          dirArray.sort(function(a, b) {
+            // 按照name属性进行降序排序
+            return a.name.localeCompare(b.name);
+          });
+          fileArray.sort(function(a, b) {
+            // 按照name属性进行降序排序
+            return a.name.localeCompare(b.name);
+          });
+          files = dirArray.concat(fileArray)
+        }
+      }
 
       return files;
     },
@@ -141,6 +159,7 @@ var vm = new Vue({
   },
   methods: {
     getEncodePath: function (filepath) {
+      console.log(filepath)
       return pathJoin([location.pathname].concat(filepath.split("/").map(v => encodeURIComponent(v))))
     },
     formatBytes:function (value) {
@@ -209,6 +228,9 @@ var vm = new Vue({
           return 'fa-git-square';
         }
         return "fa-folder-open";
+      }
+      if (f.type == "symlink") {
+        return "fa-link";
       }
       var ext = getExtention(f.name);
       switch (ext) {
