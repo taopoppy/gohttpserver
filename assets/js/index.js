@@ -56,6 +56,12 @@ var vm = new Vue({
     version: "loading",
     mtimeTypeFromNow: false, // or fromNow
     auth: {},
+    modelsearch: '', // 搜索内容
+    searchModelContent:[], // models检索结果
+    searchDataSetContent: [], // dataset检索结果
+    isFocused: false, // 搜索框是否聚焦
+    typingTimer: null,
+    typingTimeout: 1000,  // 设置停顿的时间阈值，单位为毫秒
     search: getQueryString("search"),
     files: [{
       name: "loading ...",
@@ -66,6 +72,13 @@ var vm = new Vue({
     myDropzone: null,
   },
   computed: {
+    shouldShowElement: function() {
+      if(this.searchModelContent.length >0 || this.searchDataSetContent.length > 0) {
+        return true
+      } else {
+        return false
+      }
+    },
     computedFiles: function () {
       var that = this;
       that.preview.filename = null;
@@ -158,6 +171,51 @@ var vm = new Vue({
     });
   },
   methods: {
+    // 点击跳转
+    clickToLick(item) {
+      console.log("itme",item)
+      window.location.href = `https://aliendao.cn/${item.path}`
+    },
+    // 搜索联想
+    handleInput() {
+      // 清除之前的计时器
+      clearTimeout(this.typingTimer);
+
+      let that = this
+      // 启动一个新的计时器
+      this.typingTimer = setTimeout(async () => {
+        // 在用户停顿一段时间后执行的操作
+        await this.getSearchResult()
+        // 在这里可以添加你想要执行的逻辑
+      }, this.typingTimeout);
+    },
+    // 输入框聚焦
+    onInputFocus: function() {
+      this.isFocused = true;
+    },
+    // 输入框失焦
+    onInputBlur: function() {
+      let that = this
+      setTimeout(()=> {
+        that.isFocused = false;
+      },500)
+    },
+    // 请求搜索数据
+    async getSearchResult() {
+      let result = await axios.get(`https://${window.location.hostname}/?check=${this.modelsearch}`)
+      let data = result.data
+      if(Array.isArray(data.models)&& data.models.length >= 10) {
+        this.searchModelContent = data.models.slice(0,10)
+      } else {
+        this.searchModelContent = data.models
+      }
+
+      if(Array.isArray(data.datasets)&& data.datasets.length >= 10) {
+        this.searchDataSetContent = data.datasets.slice(0,10)
+      } else {
+        this.searchDataSetContent = data.datasets
+      }
+    },
     getEncodePath: function (filepath) {
       return pathJoin([location.pathname].concat(filepath.split("/").map(v => encodeURIComponent(v))))
     },

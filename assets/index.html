@@ -16,6 +16,18 @@
   <link rel="stylesheet" type="text/css" href="[[.Prefix]]/-/assets/css/scrollUp-image.css">
   <link rel="stylesheet" type="text/css" href="[[.Prefix]]/-/assets/css/style.css">
   <link rel="stylesheet" type="text/css" href="[[.Prefix]]/-/assets/themes/[[.Theme]].css">
+ <style>
+    .result-item {
+      padding: 5px 10px;
+      width: 100%;
+      transition: background-color 0.3s ease; /* 添加平滑过渡效果 */
+    }
+    .result-item:hover {
+      cursor: pointer; /* 鼠标悬停时变成小手 */
+      background-color: #3B82F6; /* 鼠标悬停时背景色变成蓝色 */
+      color:#ffffff
+    }
+  </style>
 </head>
 
 <body id="app">
@@ -30,8 +42,10 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <img src="[[.Prefix]]/-/assets/imgs/title.png" alt="" style="width:35px;height:35px;float:left!important;margin-top: 5px;margin-right: 5px;">
-          <a class="navbar-brand" style="color:#ffffff" href="[[.Prefix]]/">Hugging Face镜像</a>
+          <a class="navbar-brand" style="color:#ffffff" href="[[.Prefix]]/">
+            <img src="[[.Prefix]]/-/assets/imgs/title.png" alt="" style="width:35px;height:35px;float:left!important;margin-top: -8px;margin-right: 5px;">
+            Hugging Face镜像
+          </a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
           <ul class="nav navbar-nav">
@@ -85,7 +99,7 @@
               <svg style="width:16px;height:16px;position:absolute;top:3px;left:-20px" t="1690879099264" class="icon" viewBox="0 0 1061 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2946" width="128" height="128"><path d="M447.122465 467.332105L49.240301 268.161564A33.501036 33.501036 0 0 0 0.136043 300.744763v441.020484a33.042117 33.042117 0 0 0 16.06214 27.994016L413.162511 1018.034062a33.959954 33.959954 0 0 0 17.438895 5.50702 33.042117 33.042117 0 0 0 33.042117-33.042118V497.161795a33.042117 33.042117 0 0 0-17.438895-29.82969zM398.018207 931.298504l-331.339011-208.348907v-367.134638l331.339011 162.915996zM1046.010843 263.572381a33.042117 33.042117 0 0 0-31.665363 0L550.838 467.332105a33.042117 33.042117 0 0 0-19.733487 30.288608v493.33717a33.042117 33.042117 0 0 0 49.563176 28.452934l463.048562-265.254776a33.042117 33.042117 0 0 0 16.521059-28.452934V291.566398a33.042117 33.042117 0 0 0-14.685386-27.994017z m-50.939931 441.020484L596.72983 931.298504v-413.026468l397.882163-176.224626zM991.399565 178.672496a33.042117 33.042117 0 0 0-22.486996-29.829689L550.838 1.530034a32.583199 32.583199 0 0 0-19.733487 0L83.659173 158.021173a33.042117 33.042117 0 0 0-4.130264 61.036134l397.882163 199.170541a33.042117 33.042117 0 0 0 14.685386 3.212428 33.959954 33.959954 0 0 0 13.30863 0l463.966399-205.595398a33.042117 33.042117 0 0 0 22.028078-37.172382zM494.391049 349.849021L180.490934 195.193555l358.874108-125.743613 328.126583 112.434982z m0 0" fill="#FFFFFF" p-id="2947"></path></svg>
               模型</a>
           </div>
-          <form class="navbar-form navbar-right" style="width: 400px;margin-right:0px;float: left!important;;">
+          <!-- <form class="navbar-form navbar-right" style="width: 400px;margin-right:0px;float: left!important;;">
             <div class="input-group" style="width:100%">
               <input type="text" name="search" class="form-control" placeholder="模型名称" v-bind:value="search"
                 autofocus>
@@ -95,7 +109,32 @@
                 </button>
               </span>
             </div>
-          </form>
+          </form> -->
+          <div style="width: 400px;margin-right:0px;float: left!important;margin-top: 5px;position: relative;">
+            <input
+              id="myinput"
+              autocomplete="off"
+              v-on:focus="onInputFocus"
+              v-on:blur="onInputBlur"
+              type="text"
+              name="search"
+              class="form-control"
+              placeholder="模型名称"
+              v-model="modelsearch"
+              @input="handleInput"
+            >
+            <div style="box-shadow: 0 0 5px #f2f2f2;border-radius: 10px;z-index:10;background: #ffffff; width: 400px;position:absolute;top:40px" v-if="isFocused">
+              <div style="padding: 5px 0;" v-if="shouldShowElement">
+                <div style="background: linear-gradient(to right, rgb(243, 237, 234), rgba(0, 128, 255, 0));padding: 2px;">Models</div>
+                <div class="result-item" v-for="item in searchModelContent" @click="clickToLick(item)">{{ item.name }}</div>
+                <div style="background: linear-gradient(to right, rgb(236, 235, 244), rgba(0, 128, 255, 0));padding: 2px;">Datasets</div>
+                <div class="result-item" v-for="item in searchDataSetContent" @click="clickToLick(item)">{{ item.name }}</div>
+              </div>
+              <div style="width: 400px;height:100px;display: flex;justify-content: center;align-items: center;" v-else>
+                暂无搜索结果
+              </div>
+            </div>
+          </div>
           <ul id="nav-right-bar" class="nav navbar-nav navbar-right">
           </ul>
 
@@ -340,6 +379,7 @@
   <script src="[[.Prefix]]/-/assets/js/clipboard-1.5.12.min.js"></script>
   <script src="[[.Prefix]]/-/assets/bootstrap-3.3.5/js/bootstrap.min.js"></script>
   <script src='[[.Prefix]]/-/assets/[["js/index.js" | urlhash ]]'></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/1.3.6/axios.min.js"></script>
   <!-- <script src="[[.Prefix]]/-/assets/js/index.js"></script> -->
   <!--Sync status bar color with border-color on mobile platforms.-->
   <script>
