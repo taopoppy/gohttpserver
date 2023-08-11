@@ -127,6 +127,13 @@ func (s *HTTPStaticServer) getRealPath(r *http.Request) string {
 func (s *HTTPStaticServer) hIndex(w http.ResponseWriter, r *http.Request) {
 	path := mux.Vars(r)["path"]
 	realPath := s.getRealPath(r)
+
+	// 搜索
+	if r.FormValue("check") != "" {
+		s.hCheck(w, r)
+		return
+	}
+
 	if r.FormValue("json") == "true" {
 		s.hJSONList(w, r)
 		return
@@ -564,9 +571,62 @@ func (c *AccessConf) canUpload(r *http.Request) bool {
 	return c.Upload
 }
 
+func innerFunction(pathname string, check string, models *[]HTTPFileInfo) {
+	fileInfoMap := make(map[string]os.FileInfo, 0) // models
+	// fileInfoMap1 := make(map[string]os.FileInfo, 0) // datasets
+	infos, _ := ioutil.ReadDir("/sda1/dataroot/" + pathname)
+	for _, info := range infos {
+		fileInfoMap[filepath.Join(pathname, info.Name())] = info
+	}
+	// fmt.Println("路径名称：", pathname, len(fileInfoMap))
+	for path, info := range fileInfoMap {
+		if info.IsDir() {
+			lr := HTTPFileInfo{
+				Name:    info.Name(),
+				Path:    path,
+				ModTime: info.ModTime().UnixNano() / 1e6,
+			}
+			needContains := true
+			ok := false
+			ok = (needContains == strings.Contains(strings.ToLower(lr.Name), strings.ToLower(check)))
+			if ok {
+				name := deepPath(pathname, info.Name())
+				lr.Name = name
+				lr.Path = filepath.Join(filepath.Dir(path), name)
+				lr.Type = "dir"
+				*models = append(*models, lr)
+			}
+			innerFunction(lr.Path, check, models)
+		}
+	}
+}
+
+func (s *HTTPStaticServer) hCheck(w http.ResponseWriter, r *http.Request) {
+	requestPath := mux.Vars(r)["path"]
+	realPath := s.getRealPath(r)
+	fmt.Println("requestPath", requestPath, "realPath", realPath)
+	modelpath := "models"
+	datasetpath := "datasets"
+	check := r.FormValue("check")
+
+	// 根军check过滤出是目录的文件
+	models := make([]HTTPFileInfo, 0)
+	datasets := make([]HTTPFileInfo, 0)
+	innerFunction(modelpath, check, &models)
+	innerFunction(datasetpath, check, &models)
+
+	data, _ := json.Marshal(map[string]interface{}{
+		"models":   models,
+		"datasets": datasets,
+	})
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
 func (s *HTTPStaticServer) hJSONList(w http.ResponseWriter, r *http.Request) {
 	requestPath := mux.Vars(r)["path"]
 	realPath := s.getRealPath(r)
+	// fmt.Println("requestPath", requestPath, "realPath", realPath)
 	search := r.FormValue("search")
 	auth := s.readAccessConf(realPath)
 	auth.Upload = auth.canUpload(r)
@@ -644,7 +704,7 @@ func (s *HTTPStaticServer) hJSONList(w http.ResponseWriter, r *http.Request) {
 
 				// 将软链接目标地址与当前可执行文件的绝对路径拼接，得到绝对路径
 				result_absPath := filepath.Join(filepath.Dir(exePath), targetPath)
-				fmt.Println("最终执行路径:", result_absPath)
+				// fmt.Println("最终执行路径:", result_absPath)
 
 				targetFileInfo, err := os.Stat("/sda1" + result_absPath)
 				if err != nil {
@@ -656,7 +716,10 @@ func (s *HTTPStaticServer) hJSONList(w http.ResponseWriter, r *http.Request) {
 				lr.Size = info.Size() // formatSize(info),非软连接
 			}
 		}
-		lrs = append(lrs, lr)
+		// 取消掉关于robots.txt和sitemap.xml的显示
+		if info.Name() != "robots.txt" && info.Name() != "sitemap.xml" {
+			lrs = append(lrs, lr)
+		}
 	}
 
 	data, _ := json.Marshal(map[string]interface{}{
