@@ -173,8 +173,18 @@ var vm = new Vue({
   methods: {
     // 点击跳转
     clickToLick(item) {
-      console.log("itme",item)
       window.location.href = `https://aliendao.cn/${item.path}`
+    },
+    // 修改名称
+    modifyName(item) {
+      let tempName = item.path
+      if(tempName.includes("models/")) {
+        tempName = tempName.replace("models/","")
+      }
+      if(tempName.includes("datasets/")) {
+        tempName = tempName.replace("datasets/","")
+      }
+      return tempName
     },
     // 搜索联想
     handleInput() {

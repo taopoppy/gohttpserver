@@ -126,9 +126,9 @@
             <div style="box-shadow: 0 0 5px #f2f2f2;border-radius: 10px;z-index:10;background: #ffffff; width: 400px;position:absolute;top:40px" v-if="isFocused">
               <div style="padding: 5px 0;" v-if="shouldShowElement">
                 <div style="background: linear-gradient(to right, rgb(243, 237, 234), rgba(0, 128, 255, 0));padding: 2px;">Models</div>
-                <div class="result-item" v-for="item in searchModelContent" @click="clickToLick(item)">{{ item.name }}</div>
+                <div class="result-item" v-for="item in searchModelContent" @click="clickToLick(item)">{{ modifyName(item) }}</div>
                 <div style="background: linear-gradient(to right, rgb(236, 235, 244), rgba(0, 128, 255, 0));padding: 2px;">Datasets</div>
-                <div class="result-item" v-for="item in searchDataSetContent" @click="clickToLick(item)">{{ item.name }}</div>
+                <div class="result-item" v-for="item in searchDataSetContent" @click="clickToLick(item)">{{ modifyName(item) }}</div>
               </div>
               <div style="width: 400px;height:100px;display: flex;justify-content: center;align-items: center;" v-else>
                 暂无搜索结果
