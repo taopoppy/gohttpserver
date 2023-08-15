@@ -178,8 +178,8 @@ var vm = new Vue({
   methods: {
     // 处理输入框的上下按键
     handleKeyDown(event) {
-      event.preventDefault();
       if(event.key === 'Enter') {
+        event.preventDefault();
         let item = this.searchContent[this.searchResultIndex]
         window.location.href = `https://aliendao.cn/${item.path}`
         return
@@ -191,6 +191,7 @@ var vm = new Vue({
       let rel_range = range-1
 
       if (event.key === 'ArrowUp') {
+        event.preventDefault();
         if(this.searchResultIndex - 1 >= 0) {
           this.searchResultIndex = this.searchResultIndex - 1
         } else {
@@ -199,7 +200,7 @@ var vm = new Vue({
       }
 
       if (event.key === 'ArrowDown') {
-
+        event.preventDefault();
         if(this.searchResultIndex + 1 <= rel_range) {
           this.searchResultIndex = this.searchResultIndex + 1
         } else {
@@ -254,6 +255,7 @@ var vm = new Vue({
       setTimeout(()=> {
         that.isFocused = false;
         that.searchResultIndex = -1
+        that.searchResultPath =''
       },500)
     },
     // 请求搜索数据
