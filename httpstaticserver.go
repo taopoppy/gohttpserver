@@ -683,7 +683,7 @@ func (s *HTTPStaticServer) hJSONList(w http.ResponseWriter, r *http.Request) {
 		} else {
 			lr.Type = "file"
 			if info.Mode()&os.ModeSymlink == os.ModeSymlink {
-				lr.Type = "symlink"
+				// lr.Type = "symlink"
 
 				absPath := "/sda1/dataroot/" + lr.Path
 

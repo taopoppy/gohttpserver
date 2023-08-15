@@ -59,6 +59,8 @@ var vm = new Vue({
     modelsearch: '', // 搜索内容
     searchModelContent:[], // models检索结果
     searchDataSetContent: [], // dataset检索结果
+    searchResultIndex: -1, // 当前搜索结果显示
+    searchResultPath: '', // 当前选中的内容路径
     isFocused: false, // 搜索框是否聚焦
     typingTimer: null,
     typingTimeout: 1000,  // 设置停顿的时间阈值，单位为毫秒
@@ -72,6 +74,9 @@ var vm = new Vue({
     myDropzone: null,
   },
   computed: {
+    searchContent:function(){
+      return [...this.searchModelContent, ...this.searchDataSetContent]
+    },
     shouldShowElement: function() {
       if(this.searchModelContent.length >0 || this.searchDataSetContent.length > 0) {
         return true
@@ -171,6 +176,43 @@ var vm = new Vue({
     });
   },
   methods: {
+    // 处理输入框的上下按键
+    handleKeyDown(event) {
+      event.preventDefault();
+      if(event.key === 'Enter') {
+        let item = this.searchContent[this.searchResultIndex]
+        window.location.href = `https://aliendao.cn/${item.path}`
+        return
+      }
+
+
+      let range = this.searchContent.length
+      if(range == 0) return
+      let rel_range = range-1
+
+      if (event.key === 'ArrowUp') {
+        if(this.searchResultIndex - 1 >= 0) {
+          this.searchResultIndex = this.searchResultIndex - 1
+        } else {
+          this.searchResultIndex = rel_range
+        }
+      }
+
+      if (event.key === 'ArrowDown') {
+
+        if(this.searchResultIndex + 1 <= rel_range) {
+          this.searchResultIndex = this.searchResultIndex + 1
+        } else {
+          this.searchResultIndex = 0
+        }
+      }
+
+      if(this.searchResultIndex != -1) {
+        let item = this.searchContent[this.searchResultIndex]
+        this.searchResultPath = item.path
+      }
+
+    },
     // 点击跳转
     clickToLick(item) {
       window.location.href = `https://aliendao.cn/${item.path}`
@@ -195,7 +237,10 @@ var vm = new Vue({
       // 启动一个新的计时器
       this.typingTimer = setTimeout(async () => {
         // 在用户停顿一段时间后执行的操作
-        await this.getSearchResult()
+        await that.getSearchResult()
+        that.searchResultIndex = -1
+        that.searchResultPath =''
+
         // 在这里可以添加你想要执行的逻辑
       }, this.typingTimeout);
     },
@@ -208,6 +253,7 @@ var vm = new Vue({
       let that = this
       setTimeout(()=> {
         that.isFocused = false;
+        that.searchResultIndex = -1
       },500)
     },
     // 请求搜索数据

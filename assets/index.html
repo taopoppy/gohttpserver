@@ -7,7 +7,8 @@
   <meta name="baidu-site-verification" content="codeva-3YJPA7Rzyt" />
   <meta name="msvalidate.01" content="DC777FFE0E6EF08B103A414C8487492E" />
   <meta name="theme-color" content="#000000">
-  <title>[[.Title]]</title>
+  <meta name="description" content="HuggingFace.co资源下载网站，为AI开发者提供模型镜像加速服务，通过下载器可以达到10M/s的下载速度，解决大模型下载时间长、经常断线等问题，实现镜像加速、断点续传、无人值守下载">
+  <title>huggingface 镜像</title>
   <link rel="shortcut icon" type="image/png" href="[[.Prefix]]/-/assets/favicon.png" />
   <link rel="stylesheet" type="text/css" href="[[.Prefix]]/-/assets/bootstrap-3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="[[.Prefix]]/-/assets/font-awesome-4.6.3/css/font-awesome.min.css">
@@ -25,6 +26,11 @@
     .result-item:hover {
       cursor: pointer; /* 鼠标悬停时变成小手 */
       background-color: #3B82F6; /* 鼠标悬停时背景色变成蓝色 */
+      color:#ffffff
+    }
+
+    .selected {
+      background-color: #3B82F6;
       color:#ffffff
     }
   </style>
@@ -122,13 +128,26 @@
               placeholder="模型名称"
               v-model="modelsearch"
               @input="handleInput"
+              @keydown="handleKeyDown"
             >
             <div style="box-shadow: 0 0 5px #f2f2f2;border-radius: 10px;z-index:10;background: #ffffff; width: 400px;position:absolute;top:40px" v-if="isFocused">
               <div style="padding: 5px 0;" v-if="shouldShowElement">
                 <div style="background: linear-gradient(to right, rgb(243, 237, 234), rgba(0, 128, 255, 0));padding: 2px;">Models</div>
-                <div class="result-item" v-for="item in searchModelContent" @click="clickToLick(item)">{{ modifyName(item) }}</div>
+                <div
+                  :class="{ 'result-item': true, selected: item.path === searchResultPath }"
+                  v-for="item in searchModelContent"
+                  @click="clickToLick(item)"
+                >
+                  {{ modifyName(item) }}
+                </div>
                 <div style="background: linear-gradient(to right, rgb(236, 235, 244), rgba(0, 128, 255, 0));padding: 2px;">Datasets</div>
-                <div class="result-item" v-for="item in searchDataSetContent" @click="clickToLick(item)">{{ modifyName(item) }}</div>
+                <div
+                  :class="{ 'result-item': true, selected: item === searchResultPath }"
+                  v-for="item in searchDataSetContent"
+                  @click="clickToLick(item)"
+                >
+                  {{ modifyName(item) }}
+                </div>
               </div>
               <div style="width: 400px;height:100px;display: flex;justify-content: center;align-items: center;" v-else>
                 暂无搜索结果
