@@ -613,7 +613,7 @@ func (s *HTTPStaticServer) hCheck(w http.ResponseWriter, r *http.Request) {
 	models := make([]HTTPFileInfo, 0)
 	datasets := make([]HTTPFileInfo, 0)
 	innerFunction(modelpath, check, &models)
-	innerFunction(datasetpath, check, &models)
+	innerFunction(datasetpath, check, &datasets)
 
 	data, _ := json.Marshal(map[string]interface{}{
 		"models":   models,
