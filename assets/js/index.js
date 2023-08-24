@@ -215,8 +215,16 @@ var vm = new Vue({
 
     },
     // 点击跳转
-    clickToLick(item) {
-      window.location.href = `https://aliendao.cn/${item.path}`
+    async clickToLick(item) {
+      // 保存一下记录
+      if(window.location.hostname == 'localhost') {
+        // 测试环境
+        await axios.get(`http://localhost:8001/?checkrember=${item.path}`)
+      } else {
+        await axios.get(`https://${window.location.hostname}/?checkrember=${item.path}`)
+      }
+
+      // window.location.href = `https://aliendao.cn/${item.path}`
     },
     // 修改名称
     modifyName(item) {

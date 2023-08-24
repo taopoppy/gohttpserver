@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -18,6 +19,7 @@ import (
 
 	"github.com/alecthomas/kingpin"
 	accesslog "github.com/codeskyblue/go-accesslog"
+	"github.com/go-redis/redis/v8"
 	"github.com/go-yaml/yaml"
 	"github.com/goji/httpauth"
 	"github.com/gorilla/handlers"
@@ -55,6 +57,24 @@ type httpLogger struct{}
 
 func (l httpLogger) Log(record accesslog.LogRecord) {
 	log.Printf("%s - %s %d %s", record.Ip, record.Method, record.Status, record.Uri)
+
+	if strings.Contains(record.Uri, "?download=true") && record.Status == 200 {
+		// 这里存储到redis
+		// 有序集合的键名
+		lastIndex := strings.LastIndex(record.Uri, "/")
+		zsetName := "downloadrank"
+		member := record.Uri[:lastIndex]
+		increment := 1.0 // 增量
+
+		newScore, err := client.ZIncrBy(ctx, zsetName, increment, member).Result()
+		if err != nil {
+			fmt.Println("ZIncrBy失败:", err)
+			return
+		}
+
+		fmt.Printf("有人下载了%s : %f\n", member, newScore)
+	}
+
 }
 
 var (
@@ -68,6 +88,9 @@ var (
 	GITCOMMIT = "unknown git commit"
 	SITE      = "https://github.com/codeskyblue/gohttpserver"
 )
+
+var client *redis.Client
+var ctx context.Context
 
 func versionMessage() string {
 	t := template.Must(template.New("version").Parse(`GoHTTPServer
@@ -149,6 +172,22 @@ func fixPrefix(prefix string) string {
 }
 
 func main() {
+	// redis
+	client = redis.NewClient(&redis.Options{
+		Addr: "localhost:6379", // Redis服务器地址
+		DB:   0,                // 数据库索引
+	})
+	// 创建上下文
+	ctx = context.Background()
+
+	// 测试连接
+	pong, err1 := client.Ping(ctx).Result()
+	if err1 != nil {
+		fmt.Println("无法连接到Redis:", err1)
+		return
+	}
+	fmt.Println("连接成功:", pong)
+
 	if err := parseFlags(); err != nil {
 		log.Fatal(err)
 	}

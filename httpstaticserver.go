@@ -14,6 +14,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -127,6 +128,23 @@ func (s *HTTPStaticServer) getRealPath(r *http.Request) string {
 func (s *HTTPStaticServer) hIndex(w http.ResponseWriter, r *http.Request) {
 	path := mux.Vars(r)["path"]
 	realPath := s.getRealPath(r)
+	// 返回下载排行列表
+	if r.FormValue("downloadrank") != "" {
+		s.hDownloadRank(w, r)
+		return
+	}
+
+	// 搜索记录redis
+	if r.FormValue("checkrember") != "" {
+		s.hCheckrember(w, r)
+		return
+	}
+
+	// 返回搜索下载排行列表
+	if r.FormValue("checkrank") != "" {
+		s.hCheckrank(w, r)
+		return
+	}
 
 	// 搜索
 	if r.FormValue("check") != "" {
@@ -599,6 +617,72 @@ func innerFunction(pathname string, check string, models *[]HTTPFileInfo) {
 			innerFunction(lr.Path, check, models)
 		}
 	}
+}
+
+func (s *HTTPStaticServer) hCheckrember(w http.ResponseWriter, r *http.Request) {
+	// 这里存储到redis
+	// 有序集合的键名
+	zsetName := "checkrank"
+	member := r.FormValue("checkrember")
+	increment := 1.0 // 增量
+
+	newScore, err := client.ZIncrBy(ctx, zsetName, increment, member).Result()
+	if err != nil {
+		fmt.Println("ZIncrBy失败:", err)
+		return
+	}
+
+	fmt.Printf("有人搜索了%s: %f\n", member, newScore)
+
+	data, _ := json.Marshal(map[string]interface{}{
+		"result": newScore,
+	})
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
+func (s *HTTPStaticServer) hCheckrank(w http.ResponseWriter, r *http.Request) {
+	zsetName := "checkrank"
+
+	// 获取排名前十的成员和分数
+	zsetWithScores, err := client.ZRevRangeWithScores(ctx, zsetName, 0, 9).Result()
+	if err != nil {
+		fmt.Println("获取有序集合失败:", err)
+		return
+	}
+
+	// 将结果排序，以确保按照分数从大到小的顺序输出
+	sort.SliceStable(zsetWithScores, func(i, j int) bool {
+		return zsetWithScores[i].Score > zsetWithScores[j].Score
+	})
+
+	data, _ := json.Marshal(map[string]interface{}{
+		"rank": zsetWithScores,
+	})
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
+}
+
+func (s *HTTPStaticServer) hDownloadRank(w http.ResponseWriter, r *http.Request) {
+	zsetName := "downloadrank"
+
+	// 获取排名前十的成员和分数
+	zsetWithScores, err := client.ZRevRangeWithScores(ctx, zsetName, 0, 9).Result()
+	if err != nil {
+		fmt.Println("获取有序集合失败:", err)
+		return
+	}
+
+	// 将结果排序，以确保按照分数从大到小的顺序输出
+	sort.SliceStable(zsetWithScores, func(i, j int) bool {
+		return zsetWithScores[i].Score > zsetWithScores[j].Score
+	})
+
+	data, _ := json.Marshal(map[string]interface{}{
+		"rank": zsetWithScores,
+	})
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(data)
 }
 
 func (s *HTTPStaticServer) hCheck(w http.ResponseWriter, r *http.Request) {
