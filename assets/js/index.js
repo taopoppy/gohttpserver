@@ -64,6 +64,9 @@ var vm = new Vue({
     isFocused: false, // 搜索框是否聚焦
     typingTimer: null,
     typingTimeout: 1000,  // 设置停顿的时间阈值，单位为毫秒
+    downloadrankArr: [], // 下载排行榜
+    checkrankArr:[], // 搜索排行榜
+    downorcheck: true, // 当前展示下载还是排行，true是下载，false是搜索
     search: getQueryString("search"),
     files: [{
       name: "loading ...",
@@ -85,6 +88,7 @@ var vm = new Vue({
       }
     },
     computedFiles: function () {
+      console.log("computedFiles")
       var that = this;
       that.preview.filename = null;
 
@@ -149,14 +153,36 @@ var vm = new Vue({
     },
   },
   created: function () {
+    // $.ajax({
+    //   url: "/-/user",
+    //   method: "get",
+    //   dataType: "json",
+    //   success: function (ret) {
+    //     if (ret) {
+    //       this.user.email = ret.email;
+    //       this.user.name = ret.name;
+    //     }
+    //   }.bind(this)
+    // })
     $.ajax({
-      url: "/-/user",
+      url: `https://${window.location.hostname}/?downloadrank=1`,
+      // url: "http://localhost:8001/?downloadrank=1",
       method: "get",
       dataType: "json",
       success: function (ret) {
         if (ret) {
-          this.user.email = ret.email;
-          this.user.name = ret.name;
+          this.downloadrankArr = ret.rank
+        }
+      }.bind(this)
+    })
+    $.ajax({
+      url: `https://${window.location.hostname}/?checkrank=1`,
+      // url: "http://localhost:8001/?checkrank=1",
+      method: "get",
+      dataType: "json",
+      success: function (ret) {
+        if (ret) {
+          this.checkrankArr = ret.rank
         }
       }.bind(this)
     })
@@ -176,6 +202,47 @@ var vm = new Vue({
     });
   },
   methods: {
+    // 下载排行榜跳转
+    rankhref(member) {
+      window.location.href = `https://${window.location.hostname}${member}`
+    },
+
+    // 搜索排行榜跳转
+    rankhref1(member) {
+      window.location.href = `https://${window.location.hostname}/${member}`
+    },
+
+    // 选择排行榜
+    changeDownOrCheck() {
+      this.downorcheck = !this.downorcheck
+    },
+
+    // 处理返回内容（下载排行榜）
+    deleteModel(content) {
+      if(content=='' || content ==' ') {
+        return 'mode_download.py'
+      }
+      if(content.includes("/models/")) {
+        return content.replace("/models/", '')
+      }
+      if(content.includes("/datasets/")) {
+        return content.replace("/datasets/", '')
+      }
+
+      return content
+    },
+    // 处理返回内容（搜索排行榜）
+    deleteModel1(content) {
+      if(content.includes("models/")) {
+        return content.replace("models/", '')
+      }
+      if(content.includes("datasets/")) {
+        return content.replace("datasets/", '')
+      }
+
+      return content
+    },
+
     // 处理输入框的上下按键
     handleKeyDown(event) {
       if(event.key === 'Enter') {
@@ -224,7 +291,7 @@ var vm = new Vue({
         await axios.get(`https://${window.location.hostname}/?checkrember=${item.path}`)
       }
 
-      // window.location.href = `https://aliendao.cn/${item.path}`
+      window.location.href = `https://${window.location.hostname}/${item.path}`
     },
     // 修改名称
     modifyName(item) {

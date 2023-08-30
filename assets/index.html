@@ -8,7 +8,7 @@
   <meta name="baidu-site-verification" content="codeva-3YJPA7Rzyt" />
   <meta name="msvalidate.01" content="DC777FFE0E6EF08B103A414C8487492E" />
   <meta name="theme-color" content="#000000">
-  <meta name="description" content="HuggingFace.co资源下载网站，为AI开发者提供模型镜像加速服务，通过下载器可以达到10M/s的下载速度，解决大模型下载时间长、经常断线等问题，实现镜像加速、断点续传、无人值守下载">
+  <meta name="description" content="HuggningFace镜像网站，提供HuggingFace.co资源下载，为AI开发者提供模型镜像加速服务，通过下载器可以达到10M/s的下载速度，解决大模型下载时间长、经常断线等问题，实现镜像加速、断点续传、无人值守下载">
   <title>[[.Title]]</title>
   <link rel="shortcut icon" type="image/png" href="[[.Prefix]]/-/assets/favicon.png" />
   <link rel="stylesheet" type="text/css" href="[[.Prefix]]/-/assets/bootstrap-3.3.5/css/bootstrap.min.css">
@@ -33,6 +33,10 @@
     .selected {
       background-color: #3B82F6;
       color:#ffffff
+    }
+    .selectedrank {
+      font-size: 16px!important;
+      font-weight: bolder;
     }
   </style>
 </head>
@@ -162,8 +166,34 @@
       </div>
     </div>
   </nav>
-  <div class="container">
+  <div class="container" style="min-height: 400px;">
     <div class="col-md-12">
+      <!-- 排行榜广告部分 -->
+      <div style="position: absolute;top: 0;right: -300px;width: 300px;padding: 5px;display: flex;border-radius: 2px;border: 1px solid #f0f0f2;">
+        <!-- 排行榜部分 -->
+        <div style="width: 100%;">
+          <div style="padding: 2px; border-bottom: 1px solid #f0f0f2;">
+            <span style="margin-right: 10px;font-size: 14px;cursor: pointer;" :class="{'selectedrank':downorcheck}" @click="changeDownOrCheck">下载排行</span>
+            <span style="margin-right: 10px;font-size: 14px;cursor: pointer;" :class="{'selectedrank':!downorcheck}" @click="changeDownOrCheck">搜索排行</span>
+          </div>
+          <div v-if="downorcheck">
+            <div v-for="item in downloadrankArr"  style="display: flex;justify-content: space-between;margin: 8px 0;">
+              <span style="width: 250px;font-size: 14px;cursor: pointer;" @click="rankhref(item.Member)">{{deleteModel(item.Member)}}</span>
+              <span style="font-size: 12px;">{{item.Score}}</span>
+            </div>
+          </div>
+          <div v-else>
+            <div v-for="item in checkrankArr"  style="display: flex;justify-content: space-between;margin: 8px 0;">
+              <span style="width: 250px;font-size: 14px;cursor: pointer;" @click="rankhref1(item.Member)">{{deleteModel1(item.Member)}}</span>
+              <span style="font-size: 12px;">{{item.Score}}</span>
+            </div>
+          </div>
+       </div>
+       <!-- 广告部分 -->
+       <div>
+
+       </div>
+      </div>
       <table class="table table-hover" v-if="!previewMode">
         <thead>
           <tr>
