@@ -1,6 +1,6 @@
-jQuery('#qrcodeCanvas').qrcode({
-  text: "http://jetienne.com/"
-});
+// jQuery('#qrcodeCanvas').qrcode({
+//   text: "http://jetienne.com/"
+// });
 
 Dropzone.autoDiscover = false;
 
