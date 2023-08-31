@@ -74,6 +74,8 @@ var vm = new Vue({
       size: "...",
       type: "dir",
     }],
+    downPath:'',
+    showControl: false,
     myDropzone: null,
   },
   computed: {
@@ -91,10 +93,12 @@ var vm = new Vue({
       console.log("computedFiles")
       var that = this;
       that.preview.filename = null;
+      that.handleURLChange(0)
 
       var files = this.files.filter(function (f) {
         if (f.name == 'README.md') {
           that.preview.filename = f.name;
+          that.handleURLChange(1)
         }
         if (!that.showHidden && f.name.slice(0, 1) === '.') {
           return false;
@@ -202,6 +206,27 @@ var vm = new Vue({
     });
   },
   methods: {
+    // 处理器处理当前网址
+    handleURLChange(tag) {
+      if(tag == 0) {
+        this.showControl = false
+        this.downPath = '';
+        return
+      }
+      let tempUrl = window.location.href
+      if(tempUrl.includes('/models/')) {
+        let arr = tempUrl.split('/models/')
+        this.showControl = true
+        this.downPath = `python model_download.py --mirror --repo_id ${arr[1]}`
+      } else if(tempUrl.includes('/datasets/')) {
+        let arr = tempUrl.split('/datasets/')
+        this.showControl = true
+        this.downPath = `python model_download.py --repo_type dataset --mirror --repo_id ${arr[1]}`
+      } else {
+        this.showControl = false
+        this.downPath = '';
+      }
+    },
     // 下载排行榜跳转
     rankhref(member) {
       window.location.href = `https://${window.location.hostname}${member}`
