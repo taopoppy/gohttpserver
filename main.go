@@ -57,24 +57,6 @@ type httpLogger struct{}
 
 func (l httpLogger) Log(record accesslog.LogRecord) {
 	log.Printf("%s - %s %d %s", record.Ip, record.Method, record.Status, record.Uri)
-
-	if strings.Contains(record.Uri, "?download=true") && record.Status == 200 {
-		// 这里存储到redis
-		// 有序集合的键名
-		lastIndex := strings.LastIndex(record.Uri, "/")
-		zsetName := "downloadrank"
-		member := record.Uri[:lastIndex]
-		increment := 1.0 // 增量
-
-		newScore, err := client.ZIncrBy(ctx, zsetName, increment, member).Result()
-		if err != nil {
-			fmt.Println("ZIncrBy失败:", err)
-			return
-		}
-
-		fmt.Printf("有人下载了%s : %f\n", member, newScore)
-	}
-
 }
 
 var (

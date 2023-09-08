@@ -484,8 +484,13 @@ var vm = new Vue({
       var reqPath = this.getEncodePath(f.name)
       // TODO: fix here tomorrow
       if (f.type == "file") {
-        window.location.href = reqPath;
-        return;
+        if(f.size > 1048576) {
+          alert("请复制下载链接地址，新打开一个浏览器标签页，粘贴到地址栏中下载")
+          return;
+        } else {
+          window.location.href = reqPath;
+          return;
+        }
       }
       loadFileOrDir(reqPath);
       e.preventDefault()
@@ -684,9 +689,19 @@ $(function () {
 
   var clipboard = new Clipboard('.btn');
   clipboard.on('success', function (e) {
-    console.info('Action:', e.action);
-    console.info('Text:', e.text);
-    console.info('Trigger:', e.trigger);
+    // 点一次复制下载链接就记录一下下载
+    if(e.action == 'copy') {
+      let temArr = e.text.split("/download")
+      let nextEle = temArr[1]
+      let index = nextEle.lastIndexOf("/")
+      let tempPath = nextEle.slice(0,index)
+      console.log(tempPath)
+      axios.get(`https://${window.location.hostname}/?downloadrember=${tempPath}`)
+    }
+
+    // console.info('Action:', e.action);
+    // console.info('Text:', e.text);
+    // console.info('Trigger:', e.trigger);
     $(e.trigger)
         .tooltip('show')
         .mouseleave(function () {

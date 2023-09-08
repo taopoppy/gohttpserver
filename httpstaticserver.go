@@ -134,6 +134,12 @@ func (s *HTTPStaticServer) hIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// 下载记录redis
+	if r.FormValue("downloadrember") != "" {
+		s.hDownloadrember(w, r)
+		return
+	}
+
 	// 搜索记录redis
 	if r.FormValue("checkrember") != "" {
 		s.hCheckrember(w, r)
@@ -619,6 +625,25 @@ func innerFunction(pathname string, check string, models *[]HTTPFileInfo) {
 	}
 }
 
+// 下载记录
+func (s *HTTPStaticServer) hDownloadrember(w http.ResponseWriter, r *http.Request) {
+	// 这里存储到redis
+	// 有序集合的键名
+	zsetName := "downloadrank"
+	member := r.FormValue("downloadrember")
+	increment := 1.0 // 增量
+
+	newScore, err := client.ZIncrBy(ctx, zsetName, increment, member).Result()
+	if err != nil {
+		fmt.Println("ZIncrBy失败:", err)
+		return
+	}
+
+	fmt.Printf("有人下载了%s : %f\n", member, newScore)
+
+}
+
+// 搜索记录
 func (s *HTTPStaticServer) hCheckrember(w http.ResponseWriter, r *http.Request) {
 	// 这里存储到redis
 	// 有序集合的键名
@@ -641,6 +666,7 @@ func (s *HTTPStaticServer) hCheckrember(w http.ResponseWriter, r *http.Request) 
 	w.Write(data)
 }
 
+// 搜索排行榜
 func (s *HTTPStaticServer) hCheckrank(w http.ResponseWriter, r *http.Request) {
 	zsetName := "checkrank"
 
@@ -663,6 +689,7 @@ func (s *HTTPStaticServer) hCheckrank(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+// 下载排行榜
 func (s *HTTPStaticServer) hDownloadRank(w http.ResponseWriter, r *http.Request) {
 	zsetName := "downloadrank"
 
@@ -685,6 +712,7 @@ func (s *HTTPStaticServer) hDownloadRank(w http.ResponseWriter, r *http.Request)
 	w.Write(data)
 }
 
+// 搜索展示列表
 func (s *HTTPStaticServer) hCheck(w http.ResponseWriter, r *http.Request) {
 	requestPath := mux.Vars(r)["path"]
 	realPath := s.getRealPath(r)

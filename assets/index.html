@@ -4,11 +4,12 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="Content-Language" content="zh-CN">
+  <meta name="google-site-verification" content="4vOf2mmZExYjWiakezQNwH5XCfgq8d-0qKMXN_Bmz1c" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="baidu-site-verification" content="codeva-3YJPA7Rzyt" />
   <meta name="msvalidate.01" content="DC777FFE0E6EF08B103A414C8487492E" />
   <meta name="theme-color" content="#000000">
-  <meta name="description" content="huggingface镜像网站，提供HuggingFace.co资源下载，为AI开发者提供模型镜像加速服务，通过下载器可以达到10M/s的下载速度，解决大模型下载时间长、经常断线等问题，实现镜像加速、断点续传、无人值守下载">
+  <meta name="description" content="huggingface镜像，提供HuggingFace.co资源下载，为AI开发者提供模型镜像加速服务，通过下载器可以达到10M/s的下载速度，解决大模型下载时间长、经常断线等问题，实现镜像加速、断点续传、无人值守下载">
   <title>[[.Title]]</title>
   <link rel="shortcut icon" type="image/png" href="[[.Prefix]]/-/assets/favicon.png" />
   <!-- <link rel="stylesheet" type="text/css" href="[[.Prefix]]/-/assets/bootstrap-3.3.5/css/bootstrap.min.css"> -->
@@ -67,7 +68,7 @@
           </button>
           <a class="navbar-brand" style="color:#ffffff;display: flex;flex-direction: row;" href="[[.Prefix]]/">
             <img src="[[.Prefix]]/-/assets/imgs/title.png" alt="" style="width:35px;height:35px;float:left!important;margin-top: -8px;margin-right: 5px;">
-            <h1 style="font-size: 18px;margin-top: 0px;">Hugging&nbsp;Face镜像</h1>
+            <h1 style="font-size: 18px;margin-top: 0px;">huggingface镜像</h1>
           </a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
@@ -263,16 +264,18 @@
               <!-- <th class="hidden-xs">
                 <span style="cursor: pointer" v-on:click='mtimeTypeFromNow = !mtimeTypeFromNow'>修改时间</span>
               </th> -->
-              <th>操作<span style="font-size: 12px;color:#2196f3">（复制链接到浏览器新标签下载更快）</span></th>
+              <th>操作</span></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="f in computedFiles">
               <td style="font-size: 16px;">
-                <a v-on:click='clickFileOrDir(f, $event)' href="{{getEncodePath(f.name)}}">
-                  <!-- ?raw=false -->
+                <!-- <a v-on:click='clickFileOrDir(f, $event)' href="{{getEncodePath(f.name)}}">
                   <i style="padding-right: 0.2em;" class="fa" v-bind:class='genFileClass(f)'></i> {{f.name}}
-                </a>
+                </a> -->
+                <span style="cursor: pointer;" v-on:click='clickFileOrDir(f, $event)'>
+                  <i style="padding-right: 0.2em;" class="fa" v-bind:class='genFileClass(f)'></i> {{f.name}}
+                </span>
                 <!-- for search -->
                 <button v-show="f.type == 'file' && f.name.indexOf('/') >= 0" class="btn btn-default btn-xs"
                   @click="changeParentDirectory(f.path)">
@@ -299,13 +302,13 @@
                   </button>
                 </template>
                 <template v-if="f.type == 'file'">
-                  <a class="btn btn-default btn-xs hidden-xs" href="{{genDownloadURL(f)}}">
+                  <!-- <a class="btn btn-default btn-xs hidden-xs" href="{{genDownloadURL(f)}}">
                     <span class="hidden-xs">下载</span>
                     <span class="glyphicon glyphicon-download-alt"></span>
-                  </a>
+                  </a> -->
                   <button class="btn btn-default btn-xs bstooltip" data-trigger="manual" data-title="Copied!"
                     data-clipboard-text="{{genDownloadURL1(f)}}">
-                    <span class="hidden-xs">复制</span>
+                    <span class="hidden-xs">复制下载链接</span>
                     <i class="fa fa-copy"></i>
                   </button>
                   <!-- <button class="btn btn-default btn-xs" v-on:click="showInfo(f)">
