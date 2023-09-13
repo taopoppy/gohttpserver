@@ -173,7 +173,8 @@ func (s *HTTPStaticServer) hIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("GET", path, realPath)
+	// log.Println("GET", path, realPath)
+
 	if r.FormValue("raw") == "false" || isDir(realPath) {
 		if r.Method == "HEAD" {
 			return
@@ -187,9 +188,23 @@ func (s *HTTPStaticServer) hIndex(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
-		if r.FormValue("download") == "true" {
-			w.Header().Set("Content-Disposition", "attachment; filename="+strconv.Quote(filepath.Base(path)))
+		if r.FormValue("download") != "" {
+			// w.Header().Set("Content-Disposition", "attachment; filename="+strconv.Quote(filepath.Base(path)))
+			http.Error(w, "请复制下载链接地址，新打开一个浏览器标签页，粘贴到地址栏中下载", http.StatusForbidden)
+			return
 		}
+		if strings.HasSuffix(path, ".safetensors") ||
+			strings.Contains(path, ".safetensors?") ||
+			strings.HasSuffix(realPath, ".safetensors") ||
+			strings.Contains(realPath, ".safetensors?") ||
+			strings.HasSuffix(path, ".bin") ||
+			strings.Contains(path, ".bin?") ||
+			strings.HasSuffix(realPath, ".bin") ||
+			strings.Contains(realPath, ".bin?") {
+			http.Error(w, "请复制下载链接地址，新打开一个浏览器标签页，粘贴到地址栏中下载", http.StatusForbidden)
+			return
+		}
+
 		http.ServeFile(w, r, realPath)
 	}
 }
