@@ -77,6 +77,7 @@ var vm = new Vue({
     downPath:'',
     showControl: false,
     myDropzone: null,
+    showrank:false
   },
   computed: {
     searchContent:function(){
@@ -156,7 +157,12 @@ var vm = new Vue({
       return files;
     },
   },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize);
+  },
   created: function () {
+    this.handleResize()
+    window.addEventListener('resize', this.handleResize);
     // $.ajax({
     //   url: "/-/user",
     //   method: "get",
@@ -206,6 +212,11 @@ var vm = new Vue({
     });
   },
   methods: {
+    handleResize(){
+      // 当为手机尺寸的时候，我就把排行榜删掉
+      const mobileWidthThreshold = 768;
+      this.showrank =  window.innerWidth > mobileWidthThreshold;
+    },
     // 处理器处理当前网址
     handleURLChange(tag) {
       if(tag == 0) {
