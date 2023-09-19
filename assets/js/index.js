@@ -36,8 +36,28 @@ function showErrorMessage(jqXHR) {
   console.error(errMsg)
 }
 
+
+Vue.use(Vuex);
+// 创建一个简单的Vuex Store
+const store = new Vuex.Store({
+  state: {
+    token: localStorage.getItem('token') || null
+  },
+  mutations: {
+    setToken(state, token) {
+      state.token = token;
+      localStorage.setItem('token', token); // 在mutation中保存到LocalStorage
+    },
+    clearToken(state) {
+      state.token = null;
+      localStorage.removeItem('token'); // 清除LocalStorage中的Token
+    }
+  }
+});
+
 var vm = new Vue({
   el: "#app",
+  store: store,
   data: {
     user: {
       email: "",
@@ -80,6 +100,9 @@ var vm = new Vue({
     showrank:false
   },
   computed: {
+    token: function() {
+      return this.$store.state.token;
+    },
     searchContent:function(){
       return [...this.searchModelContent, ...this.searchDataSetContent]
     },
@@ -212,6 +235,11 @@ var vm = new Vue({
     });
   },
   methods: {
+    // addtoken() {
+    //   let oldtoken = this.$store.state.token;
+    //   console.log(this.$store, typeof oldtoken)
+    //   this.$store.dispatch('setToken', oldtoken+1); // 设置Token
+    // },
     handleResize(){
       // 当为手机尺寸的时候，我就把排行榜删掉
       const mobileWidthThreshold = 768;
